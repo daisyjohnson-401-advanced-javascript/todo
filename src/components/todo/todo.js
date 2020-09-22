@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 import TodoForm from './form.js';
 import TodoList from './list.js';
 
@@ -44,31 +46,50 @@ const ToDo = () => {
 
   return (
     <>
-      <Container fluid>
-        <Row fluid variant="dark">
-          <header>
-            <h2>
-              To Do List Manager ({list.filter(item => !item.complete).length})
-          </h2>
-          </header>
+
+      <header>
+        <Navbar expand="lg" bg="primary" variant="dark" >
+          <Nav className="mr-auto">
+            <Nav.Link href="/">Home</Nav.Link>
+          </Nav>
+        </Navbar>
+      </header>
+
+
+      <Container>
+
+        <Row>
+
+          <Col>
+            <section className="todo">
+              <header>
+                <Navbar bg="dark" variant="dark" >
+                  <Nav className="mr-auto">
+                    <Navbar.Brand>
+                      To Do List Manager ({list.filter(item => !item.complete).length})
+              </Navbar.Brand>
+                  </Nav>
+                </Navbar>
+              </header>
+            </section>
+          </Col>
         </Row>
 
         <Row>
-          <section className="todo">
-            <Col>
-              <div>
-                <TodoForm handleSubmit={addItem} />
-              </div>
-            </Col>
-            <Col>
+          <Col>
+            <div>
+              <TodoForm handleSubmit={addItem} />
+            </div>
+          </Col>
+
+          <Col>
             <div>
               <TodoList
                 list={list}
                 handleComplete={toggleComplete}
               />
             </div>
-            </Col>
-          </section>
+          </Col>
         </Row>
       </Container>
     </>
