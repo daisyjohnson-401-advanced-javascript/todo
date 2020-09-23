@@ -46,7 +46,6 @@ const ToDo = () => {
 
   return (
     <>
-
       <header>
         <Navbar expand="lg" bg="primary" variant="dark" >
           <Nav className="mr-auto">
@@ -61,7 +60,7 @@ const ToDo = () => {
         <Row>
 
           <Col>
-            <section className="todo">
+            
               <header>
                 <Navbar bg="dark" variant="dark" >
                   <Nav className="mr-auto">
@@ -71,18 +70,18 @@ const ToDo = () => {
                   </Nav>
                 </Navbar>
               </header>
-            </section>
+           
           </Col>
         </Row>
 
         <Row>
-          <Col>
+          <Col md={4}>
             <div>
               <TodoForm handleSubmit={addItem} />
             </div>
           </Col>
 
-          <Col>
+          <Col md={8}>
             <div>
               <TodoList
                 list={list}
