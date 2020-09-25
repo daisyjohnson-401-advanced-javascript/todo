@@ -7,7 +7,7 @@ const TodoList = (props) => {
       <>
       <ListGroup >
         {props.list.map(item => (
-          <ListGroup.Item  action variant={item.complete ? "success" : "danger"}
+          <ListGroup.Item  action variant={item.complete ? "danger" : "success"}
             key={item._id} >
               <span onClick={() => props.handleComplete(item._id)}>
               {item.text}
