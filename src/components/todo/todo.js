@@ -1,98 +1,116 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+
+import './todo.scss';
 import { Container, Row, Col } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+
 import TodoForm from './form.js';
 import TodoList from './list.js';
+import axios from 'axios';
+import useAjax from '../../hooks/useAjax';
 
-import './todo.scss';
+const url = 'https://api-js401.herokuapp.com/api/v1/todo'
+function ToDo(props) {
+ 
+  const { list, setList } = useAjax(url);
 
-const ToDo = () => {
+ 
+  const addItem = async item => {
+    console.log('added item');
+      item._id = Math.random();
+      item.complete = false;
+      setList([...list, item]);
 
-  const [list, setList] = useState([]);
-
-  const addItem = (item) => {
-    item._id = Math.random();
-    item.complete = false;
-    setList([...list, item]);
+      const request = {
+        id: item._id,
+        text: item.text,
+        asignee: item.asignee,
+        difficulty: item.difficuly,
+        complete: item.complete,
+      };
+     await axios.post(url, request); 
   };
 
-  const toggleComplete = id => {
+  const toggleComplete = async id => {
 
     let item = list.filter(i => i._id === id)[0] || {};
 
     if (item._id) {
       item.complete = !item.complete;
+      const request = {
+        id: item._id,
+        complete: item.complete,
+      }
+      await axios.put(`${url}/${id}`, request);
+
       let newList = list.map(listItem => listItem._id === item._id ? item : listItem);
       setList(newList);
-    }
+  }
+};
 
+  const deleteItem = async id => {
+    await axios.delete(`${url}/${id}`);
   };
+  
 
-  //use a useEffect to preload the seeded todo Items
+  // //use a useEffect to preload the seeded todo Items
   useEffect(() => {
-    let list = [
-      { _id: 1, complete: false, text: 'Clean the Kitchen', difficulty: 3, assignee: 'Person A' },
-      { _id: 2, complete: false, text: 'Do the Laundry', difficulty: 2, assignee: 'Person A' },
-      { _id: 3, complete: false, text: 'Walk the Dog', difficulty: 4, assignee: 'Person B' },
-      { _id: 4, complete: true, text: 'Do Homework', difficulty: 3, assignee: 'Person C' },
-      { _id: 5, complete: false, text: 'Take a Nap', difficulty: 1, assignee: 'Person B' },
-    ];
-
-    setList(list);
-  }, []);
+    let todoList = list.filter(item => !item.complete).length;
+    document.title = `To Do List: ${todoList}`;
+  }, [list]);
 
 
 
   return (
     <>
       <header>
-        <Navbar expand="lg" bg="primary" variant="dark" >
+        <Navbar bg="primary" variant="dark" >
+          <Navbar.Toggle
+          aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse
+          id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link href="/">Home</Nav.Link>
           </Nav>
+          </Navbar.Collapse>
         </Navbar>
       </header>
 
 
       <Container>
-
-        <Row>
-
+        <Row style={{margin:'1rem 0'}}>
           <Col>
-            
-              <header>
                 <Navbar bg="dark" variant="dark" >
-                  <Nav className="mr-auto">
-                    <Navbar.Brand>
-                      To Do List Manager ({list.filter(item => !item.complete).length})
+                    <Navbar.Brand href='#home'>
+                      To Do List Manager (
+                        {list.filter(item => !item.complete).length})
               </Navbar.Brand>
-                  </Nav>
                 </Navbar>
-              </header>
-           
           </Col>
         </Row>
 
         <Row>
-          <Col md={4}>
-            <div>
+          <Col md="auto" style={{margin:'1rem'}}>
+
               <TodoForm handleSubmit={addItem} />
-            </div>
+
           </Col>
 
-          <Col md={8}>
-            <div>
+          <Col md="auto" style={{margin:'1rem'}}>
+
               <TodoList
                 list={list}
                 handleComplete={toggleComplete}
+                handleDelete={deleteItem}
               />
-            </div>
+
           </Col>
         </Row>
       </Container>
     </>
   );
 }
+
 
 export default ToDo;
