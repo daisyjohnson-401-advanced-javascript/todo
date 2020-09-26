@@ -1,28 +1,30 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const useAjax = (url) =>  {
+const useAjax = url =>  {
 
 
-  const [list, setList ] = useState({});
+  const [list, setList ] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect( () => {
-
-
-    async function fetchData(){
-    const response = await axios.get('https://api-js401.herokuapp.com/api/v1/todo');
+    async function fetchData(url){
+    setIsLoading(true);
+    const response = await axios.get(url);
     const results = response.data.results;
-    console.log(results);
     setList(results);
+    setIsLoading(false);
     }
 
-    fetchData();
+    fetchData(url);
 
   }, [url]);
 
   return {
     list,
     setList,
+    isLoading,
+    setIsLoading,
   }
 }
 

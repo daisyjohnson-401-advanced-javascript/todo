@@ -8,7 +8,7 @@ import Card from 'react-bootstrap/Card';
 
 
 
-const TodoForm = (props) => {
+const TodoForm = props => {
 
   const { handleChange, handleSubmit } = useForm(props.handleSubmit);
 
